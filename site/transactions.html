@@ -1,0 +1,198 @@
+<include href="site/header.htm" xmlns="http://www.w3.org/1999/html"/>
+
+<div class="container bankpanel">
+    <h3 class="text-center">Bij- en afschrijvingen</h3>
+    <hr/>
+    <p class="text-right">Huidig saldo: <span class="balancebox">{{ money_format("%i", @account.balance) }}</span></p>
+    <check if="{{ @transactions }}">
+        <true>
+            <div class="table-responsive">
+            <table id="transactions" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th>Dateorder</th>
+                        <th>Datum</th>
+                        <th>Naam</th>
+                        <th>Omschrijving</th>
+                        <th>Tegenrekening</th>
+                        <th>Bedrag</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="{{ @transactions }}" value="{{ @transaction }}">
+                        <tr>
+                            <td>{{ @transaction->dateorder }}</td>
+                            <td>{{ @transaction->localDate() }}</td>
+                            <check if="{{ @account.id == @transaction.account_id_to }}">
+                                <true>
+                                    <td>{{ @transaction->account_from_owner }}</td>
+                                    <td>{{ @transaction->description }}</td>
+                                    <td>{{ @transaction->account_from }}</td>
+                                    <td>+{{ money_format('%.2n', @transaction->amount)}}</td>
+                                </true>
+                                <false>
+                                    <td>{{ @transaction->account_to_owner }}</td>
+                                    <td>{{ @transaction->description }}</td>
+                                    <td>{{ @transaction->account_to }}</td>
+                                    <td class="negative">-{{ money_format('%.2n', @transaction->amount)}}</td>
+                                </false>
+                            </check>
+                        </tr>
+                    </repeat>
+                </tbody>
+            </table>
+            </div>
+        </true>
+        <false>
+            <h2>Er zijn nog geen transacties geweest</h2>
+        </false>
+    </check>
+</div>
+<br><br>
+<div class="container bankpanel">
+    <h3 class="text-center">Overboeken naar</h3>
+    <hr/>
+    <form action="{{ 'transactions' | alias }}" method="POST">
+        <div class="form-group">
+            <div class="dropdown">
+                <label for="account_to">Tegenrekening</label>
+                <check if="{{ @addressbook }}">
+                    <true>
+                        <button id="adresboek" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Adresboek</button>
+                        <div class="dropdown-menu" aria-labelledby="adresboek">
+                            <repeat group="{{ @addressbook }}"  value="{{ @address }}">
+                                <span class="dropdown-item" data-id="address" data-account="{{ @address->number }}" data-name="{{ @address->displayname }}">{{ @address->displayname }}</span>
+                            </repeat>
+                        </div>
+                    </true>
+                </check>
+            </div>
+            <input type="text" class="form-control" id="account_to" name="account_to" value="{{ @newtransaction.account_to }}" placeholder="NL99BAFO0123456789" >
+        </div>
+        <div class="form-group">
+            <label for="name_ignored">Naam rekeninghouder</label>
+            <input type="text" class="form-control" id="name_ignored" name="name_ignored" value="{{ @account_to_displayname }}">
+        </div>
+        <div class="form-group">
+            <label for="description">Omschrijving</label>
+            <input type="text" class="form-control" id="description" name="description" value="{{ @newtransaction.description }}">
+        </div>
+        <div class="form-group">
+            <label for="description">Bedrag</label>
+            <input type="text" class="form-control" id="amount" name="amount" value="{{ @newtransaction.amount }}">
+        </div>
+    <input type="hidden" name="savetransaction" value="true">
+    <button type="submit" class="btn btn-primary">Verstuur transactie</button>
+    </form>
+
+    </p>
+</div>
+
+<script>
+    $(document).ready( function () {
+        $('#transactions').DataTable({
+            "pagingType": "simple",
+            "pageLength": 20,
+            "lengthChange": false,
+            responsive: true,
+            language: {
+                search: "Doorzoek transacties:",
+                emptyTable:     "U heeft nog geen transacties geplaatst.",
+                paginate: {
+                    first:      "Eerste",
+                    previous:   "Vorige",
+                    next:       "Volgende",
+                    last:       "Laatste"
+                },
+                aria: {
+                    sortAscending:  ": Sorteer oplopend",
+                    sortDescending: ": Sorteer aflopend"
+                },
+                info:           "Toont _START_ tot _END_ van _TOTAL_ transacties",
+                infoEmpty:      "Geen transacties",
+            },
+            "columnDefs": [
+                { "orderData":[ 0 ],   "targets": [ 1 ] },
+                {
+                    "targets": [ 0 ],
+                    "visible": false,
+                    "searchable": false
+                },
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ]
+
+
+        });
+
+        $('#amount').change( function() {
+            truevalue = $('#amount').val();
+            // Vervang spaties en punten door lege waardes
+            truevalue = truevalue.replace(" .", "");
+
+            // Vervang de komma door een punt
+            truevalue = truevalue.replace(",", ".");
+
+            // Maak een float van je getal
+            truevalue = parseFloat(truevalue)
+            console.log(truevalue)
+
+            // Is het nog een getal?
+            if (isNaN(truevalue)) {
+                truevalue = 0
+            }
+
+            // Stiekemerds..
+            if (truevalue < 0) {
+                truevalue = 0;
+            }
+
+            // Is het niet meer dan kan?
+            maxval = parseFloat({{ @account.balance }})
+            if(truevalue > maxval) {
+                truevalue = maxval;
+            }
+
+            // Stamp de precisie om tot 2 getallen achter de komma
+            truevalue = truevalue.toFixed(2);
+
+            $('#amount').val(truevalue.toString().replace(".", ","));
+        })
+
+        $('span[data-id="address"]').click(function (e) {
+            var addressClicked = $( e.target );
+            $("#account_to").val(addressClicked.attr("data-account"))
+            $("#name_ignored").val(addressClicked.attr("data-name"))
+            //$('.adresboek').dropdown()
+            //e.preventDefault();
+           // e.stopPropagation();
+        })
+
+
+        // Mooie hack, maar Carel wil liever platte tekstvelden
+    // <div class="form-group">
+    //         <label for="accountid">Rekeningnummer (IBAN)</label>
+    //         <select class="form-control" id="accountid" name="accountid">
+    //         <option></option>
+    //         <repeat group="{{ @all_accounts }}" value="{{ @all_account }}">
+    //         <option value="{{ @all_account->id }}" data-displayname="{{ @all_account->displayname }}">{{ @all_account->number }}</option>
+    //     </repeat>
+    //     </select>
+    //     </div>
+    //
+    //     <div class="form-group">
+    //         <label for="displayname">Naam ontvanger</label>
+    //     <input type="text" class="form-control" id="displayname" name="displayname" readonly="readonly">
+    //         </div>
+
+        // $("#accountid").change( function() {
+        //     var displayName = $( "#accountid option:selected" ).attr("data-displayname");
+        //     $("#displayname").val(displayName);
+        // })
+    } );
+
+
+
+</script>
+</body>
+

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="https://intothemirror.nl/wp-content/uploads/2016/10/Logo-man-favicon.png" />
+    <title>Bank Fortuin - Pecunia non olet!</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/responsive.bootstrap4.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bankfortuin.css"/>
+    <script src="/js/jquery-3.2.1.slim.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/datatables.min.js"></script>
+    <script type="text/javascript" src="/js/dataTables.responsive.min.js"></script>
+
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <check if="{{ @SESSION.accountid }}">
+            <!-- <nav class="navbar navbar-expand navbar-light bg-light"> -->
+            <nav class="navbar navbar-expand navbar-light bg-light">
+                <a class="navbar-brand" href="#">
+                    <img src="/images/Logo-BF.png" class="d-none d-md-block logoclass" alt="Bank Fortuin">
+                    <img src="/images/Logo-BF_smaller.png" class="d-block d-md-none logoclass" alt="Bank Fortuin">
+                </a>
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Rekening  {{ @account.number }}</a>
+                    </li>
+                </ul>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="nav-item">
+                            <a class="btn btn-primary my-2 my-sm-0" href="{{ 'logout' | alias }}">Uitloggen</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </check>
+        <div class="text-center">
+            <F3:repeat group="{{ \Flash::instance()->getMessages() }}" value="{{ @msg }}">
+                <div class="alert alert-{{ @msg.status }} alert-dismissible" role="alert">
+                    {{ @msg.text }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </F3:repeat>
+        </div>
+    </div>
+

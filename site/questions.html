@@ -1,0 +1,42 @@
+<include href="site/header.htm" xmlns="http://www.w3.org/1999/html"/>
+
+<div class="container bankpanel">
+    <h3 class="text-center">Wachtwoord vergeten</h3>
+    <hr/>
+
+    <p>U bent uw wachtwoord vergeten, dat is heel vervelend. U heeft eerder beveiligingsvragen ingesteld. Door de volgende vragen correct te beantwoorden is het mogelijk om alsnog uw rekening te beheren.</p>
+    <form action="{{ 'answers' | alias }}" method="post">
+        <div class="form-group">
+            <repeat group="{{ @questions }}" value="{{ @question }}">
+                <label for="{{ @question.id }}">{{ @question.question }}</label>
+                <check if="{{ @question.playeranswer }}">
+                    <true>
+                        <check if="{{ @question.playercorrect }}">
+                            <true>
+                                <input type="text" class="form-control is-valid" id="{{ @question.id }}" name="{{ @question.id }}" value="{{ @question.playeranswer }}">
+                            </true>
+                            <false>
+                                <input type="text" class="form-control is-invalid" id="{{ @question.id }}" name="{{ @question.id }}" value="{{ @question.playeranswer }}">
+                                <div class="invalid-feedback">
+                                    Dit antwoord was helaas onjuist
+                                </div>
+                            </false>
+                        </check>
+                    </true>
+                    <false>
+                        <input type="text" class="form-control" id="{{ @question.id }}" name="{{ @question.id }}" value="{{ @question.playeranswer }}">
+                    </false>
+                </check>
+            </repeat>
+        </div>
+        <button type="submit" class="btn btn-primary">Aanmelden</button>
+    </form>
+</div>
+<script>
+    $(document).ready( function () {
+    } );
+
+
+
+</script>
+</body>

@@ -1,0 +1,42 @@
+<include href="site/header.htm" xmlns="http://www.w3.org/1999/html"/>
+<!-- bootstrap style-->
+<div class="container login bankpanel">
+    <div class="text-center">
+    <F3:repeat group="{{ \Flash::instance()->getMessages() }}" value="{{ @msg }}">
+        <div class="alert alert-{{ @msg.status }} alert-dismissible" role="alert">
+            {{ @msg.text }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </F3:repeat>
+
+    <form class="form-signin" action="{{ 'validatelogin' | alias }}" method="post">
+        <img src="/images/Logo-BF.png" width="60%">
+        <p>Log in met uw rekeningnummer en wachtwoord</p>
+        <label for="account" class="sr-only">Rekening</label>
+        <input type="text" id="account" name="account" class="form-control" placeholder="Rekening" required autofocus>
+        <label for="inputPassword" class="sr-only">Wachtwoord</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Wachtwoord" required>
+        <span id="forgotten_password" data-base="{{ 'questions' | alias }}" class="mt-5 mb-3 text-muted"><a href=""><i>Ik ben mijn wachtwoord vergeten!</i></a></span>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Aanmelden</button>
+        <p class="mt-5 mb-3 text-muted tinytext"><a href="http://www.intothemirror.nl/">http://www.intothemirror.nl/</a></p>
+    </form>
+    </div>
+<script language="JavaScript">
+    $('#forgotten_password').hide();
+    $('#account').on('input', function() {
+        if($('#account').val()) {
+            fg = $('#forgotten_password');
+            fghref = $('#forgotten_password > a').first();
+            fghref.attr("href", fg.attr("data-base").replace("@accountnum", $('#account').val()) );
+            fg.show();
+        }
+    });
+
+</script>
+
+
+</div>
+</body>
+</html>

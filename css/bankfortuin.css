@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('/css/Ubuntu-Regular.ttf');
+}
+
+html,
+body {
+    width: 100%;
+    font-family: 'Ubuntu', Fallback, sans-serif;
+    background-color: #FF7F00;
+}
+
+td {
+    padding: 3px;
+}
+tr:nth-child(even) {
+    background-color: #cccccc;
+
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+a {
+    font-weight: bold;
+    color: #FF7F00
+}
+
+.negative {
+    color: Maroon;
+}
+
+.tinytext {
+    font-size: 80%;
+}
+
+.btn-primary {
+    background-color: #FF7F00;
+}
+
+.btn-primary:hover {
+    background-color: #000000;
+}
+
+.logoclass {
+    width: 50%;
+}
+
+.balancebox {
+    background-color: white;
+    border: 1px solid grey;
+    padding: 3px;
+}
+.container-fluid {
+    padding: 0px;
+}
+
+.bankpanel {
+    background-color: #f2f2f2;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+
+}
+
+.form-control::placeholder { color: lightgrey;}
+:-ms-input-placeholder.form-control { color: lightgrey; }
+.form-control::-ms-input-placeholder { color: lightgrey; }
+
+/* Loginpagina spul */
+.login {
+    margin-top: 10%;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    background-color: #f2f2f2;
+    border-radius: 15px;
+}
+
+.form-signin {
+    width: 100%;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .checkbox {
+    font-weight: 400;
+}
+.form-signin .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
