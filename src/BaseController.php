@@ -9,7 +9,6 @@ abstract class BaseController {
 
     function beforeroute() {
         $account = $this->refreshStoredAccount($this->f3->get('SESSION.accountid'));
-        $this->logger->write("Les go: " . $this->f3->get('PATH'));
         if($this->f3->get('PATH') == "/logout") {
             $this->logout();
         } else if(!$account->dry()) {

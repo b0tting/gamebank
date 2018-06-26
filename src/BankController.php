@@ -5,7 +5,7 @@ class BankController extends BaseController {
         $unprot = ["/questions", "/login", "/answers"];
         $isunprot = false;
         foreach($unprot as $unprotpath) {
-            $isunprot = strpos($path,$unprotpath) == 0;
+            $isunprot = strpos($path,$unprotpath) === 0;
             if($isunprot) {
                 break;
             }

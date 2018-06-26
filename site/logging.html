@@ -1,11 +1,25 @@
-<include href="site/header.htm" xmlns="http://www.w3.org/1999/html"/>
+<include href="site/header.htm"  with="adminheader=true" xmlns="http://www.w3.org/1999/html"/>
 <div class="container bankpanel">
-    <a href="/dbadminitm.php" class="btn btn-primary" role="button">DB Admin</a>
+    <form action="/{{ @phplite_admin_file }}" method="post" style="display: inline;"><input type="hidden" name="password" value="{{ @phplite_admin_pass }}"><input type="hidden" name="login" value="true"><button class="btn btn-primary">DB Admin</button></form>
     <a href="{{'resetblocks' | alias }}" class="btn btn-primary" role="button">Verwijder blokkades</a>
+    <a href="{{'spindates' | alias }}" class="btn btn-primary" role="button">Transactiedata vernieuwen</a>
+    <a href="{{'adminlogout' | alias }}" class="btn btn-primary" role="button">Uitloggen</a>
+
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reset_database">
         Reset database
     </button>
 </div>
+<div class="container bankpanel">
+    <div class="form-inline">
+        <label for="accountid">Log in als:</label>&nbsp;
+        <select class="form-control" id="accountid" name="accountid" style="display: inline;">
+            <repeat group="{{ @all_accounts }}" value="{{ @all_account }}">
+            <option value="{{ @all_account->number }}">{{ @all_account->displayname }} / {{ @all_account->number }}</option>
+            </repeat>
+        </select>&nbsp;
+        <button class="btn btn-primary" id="accountlogin">Log in</button>
+    </div>
+</div>    
 <div class="container bankpanel">
     <table id="logcontents" style="width:100%">
         <thead>
@@ -52,6 +66,17 @@
         "pageLength": 20,
         "lengthChange": false
     });
+
+    $('#dbadmin').click(function(e) {
+        $.post("dbadminitm.php", {login: "true", password : 'KaWP6Hmu3dYTMa5s'} );
+    });
+
+    $('#accountlogin').click(function(e) {
+        var base = "{{ 'loginas' | alias }}"
+        base = base.replace("@accountnum", $('#accountid').val())
+        window.location.replace(base);
+    })
+
 </script>
 </body>
 </html>

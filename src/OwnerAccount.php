@@ -16,7 +16,7 @@ class OwnerAccount extends \DB\SQL\Mapper {
     }
 
     public function loadAccountFromNumber($accountnumber) {
-        $this->load(array('number = :number' , ':number'=>$accountnumber));
+        $this->load(array('lower(number) = :number' , ':number'=>strtolower($accountnumber)));
     }
 
     public function setAccess($date, $ip) {
@@ -43,6 +43,11 @@ class OwnerAccount extends \DB\SQL\Mapper {
     public function getAllButMe() {
         return $this->find(array('id != ?' , $this->id));
     }
+
+    public function getAll() {
+        return $this->find();
+    }
+
 
     public function hasQuestions() {
         $question = new Question();

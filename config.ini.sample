@@ -1,8 +1,12 @@
 [globals]
 DEBUG=3;
 AUTOLOAD=src/
+
+## Database file name
 db_file=itmbank.sqlite
 itm_debug=false
+
+## Database log file name
 logfile=itmbank.log
 
 ## Hoe sterk moeten de antwoorden gegeven door spelers op beveiliginsvragen gelijk zijn aan het wachtwoord
@@ -23,11 +27,13 @@ lockout_minutes = 10
 ## Vergeettijd in minuten (kort!)
 failed_auth_remember = 2
 
-## Admin wachtwoord
-admin_pass = bazooka
+## Admin wachtwoord voor /admin
+admin_pass = test123
 
-## phpLiteAdmin password
-phplite_admin_pass = KaWPmu3dYTMa5s
+## phpLiteAdmin password, aangenomen dat er in de huidige directory een phpliteadmin.config.php staat
+## Let erop dat je in phpliteadmin de CSRF functie moet uitschakelen in de code om de direct doorloggen knop mogelijk te maken
+phplite_admin_pass = test123
 
-## Pg
-phplite_admin_file = dbadminitm.php
+## phpLiteAdmin url
+## Let erop dat je in phpliteadmin de CSRF functie moet uitschakelen in de code om de direct doorloggen knop mogelijk te maken
+phplite_admin_file = somename.php

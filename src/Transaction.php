@@ -29,6 +29,12 @@ class Transaction extends \DB\SQL\Mapper
         return $ledate->format('d-m-Y H:i');
     }
 
+    public function randomizeToRecentDate() {
+        if(!$this->dry()) {
+            \Base::instance()->get('DB')->exec("update transactions set date = datetime(strftime('%s', 'now') - ABS(RANDOM() % 604800), 'unixepoch') where id = ?", $this->id);
+        }
+    }
+
     // Okay. Dus ik heb mij wat in de voet gescohten met mijn view itt een echte tabel.
     // Daarom een harde save met SQL
     public function savetransaction()

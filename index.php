@@ -1,7 +1,6 @@
 <?php
 // GO F3 GO!
 require('lib/base.php');
-include('src/baseLineLoad.php');
 
 $f3 = \Base::instance();
 $f3->config('config.ini');
@@ -39,13 +38,16 @@ $f3->route('POST @validatelogin: /login','BankController->authenticate');
 $f3->route('GET  @logout: /logout','BankController->logout');
 $f3->route('GET @questions: /questions/@accountnum','BankController->questions');
 $f3->route('POST @answers: /answers/@accountnum','BankController->answers');
-$f3->route('GET @login: /','BankController->index');
 
 // Systeem admin spul
-$f3->route('GET @logging: /logging','AdminController->logging');
-$f3->route('GET @resetdb: /resetdb','AdminController->resetdb');
-$f3->route('GET @resetblocks: /resetblocks','AdminController->resetLockouts');
+$f3->route('GET|POST @adminlogin: /admin/adminloginpage','AdminController->adminlogin');
+$f3->route('GET @adminlogout: /admin/adminlogout','AdminController->adminlogout');
+$f3->route('GET @spindates: /admin/spindates','AdminController->spinTransactionDates');
+$f3->route('GET @loginas: /admin/loginas/@accountnum','AdminController->loginAs');
+$f3->route('GET @resetdb: /admin/resetdb','AdminController->resetdb');
+$f3->route('GET @resetblocks: /admin/resetblocks','AdminController->resetLockouts');
+$f3->route('GET @adminpage: /admin','AdminController->adminpage');
 
-
+$f3->route('GET @login: /','BankController->index');
 
 $f3->run();

@@ -3,7 +3,9 @@
 <div class="container bankpanel">
     <h3 class="text-center">Bij- en afschrijvingen</h3>
     <hr/>
-    <p class="text-right">Huidig saldo: <span class="balancebox">{{ money_format("%i", @account.balance) }}</span></p>
+        <p class="balance_class">Huidig saldo: <span class="balancebox">{{ money_format("%i", @account.balance) }}</span>
+            <button class="btn btn-sm btn-primary" style="margin-bottom: 4px;" data-toggle="modal" data-target="#transfer"><i class="fas fa-exchange-alt"></i> Overmaken</button>
+        </p>
     <check if="{{ @transactions }}">
         <true>
             <div class="table-responsive">
@@ -44,55 +46,68 @@
             </div>
         </true>
         <false>
-            <h2>Er zijn nog geen transacties geweest</h2>
+            <h5>Er hebben nog geen transacties op deze rekening plaatsgevonden.</h5>
         </false>
     </check>
 </div>
 <br><br>
-<div class="container bankpanel">
-    <h3 class="text-center">Overboeken naar</h3>
-    <hr/>
-    <form action="{{ 'transactions' | alias }}" method="POST">
-        <div class="form-group">
-            <div class="dropdown">
-                <label for="account_to">Tegenrekening</label>
-                <check if="{{ @addressbook }}">
-                    <true>
-                        <button id="adresboek" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Adresboek</button>
-                        <div class="dropdown-menu" aria-labelledby="adresboek">
-                            <repeat group="{{ @addressbook }}"  value="{{ @address }}">
-                                <span class="dropdown-item" data-id="address" data-account="{{ @address->number }}" data-name="{{ @address->displayname }}">{{ @address->displayname }}</span>
-                            </repeat>
-                        </div>
-                    </true>
-                </check>
-            </div>
-            <input type="text" class="form-control" id="account_to" name="account_to" value="{{ @newtransaction.account_to }}" placeholder="NL99BAFO0123456789" >
-        </div>
-        <div class="form-group">
-            <label for="name_ignored">Naam rekeninghouder</label>
-            <input type="text" class="form-control" id="name_ignored" name="name_ignored" value="{{ @account_to_displayname }}">
-        </div>
-        <div class="form-group">
-            <label for="description">Omschrijving</label>
-            <input type="text" class="form-control" id="description" name="description" value="{{ @newtransaction.description }}">
-        </div>
-        <div class="form-group">
-            <label for="description">Bedrag</label>
-            <input type="text" class="form-control" id="amount" name="amount" value="{{ @newtransaction.amount }}">
-        </div>
-    <input type="hidden" name="savetransaction" value="true">
-    <button type="submit" class="btn btn-primary">Verstuur transactie</button>
-    </form>
 
-    </p>
+
+<div class="modal" tabindex="-1" role="dialog" id="transfer">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Overboeken naar</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form action="{{ 'transactions' | alias }}" id="transaction" method="POST">
+        <div class="modal-body">
+                <div class="form-group">
+                    <div class="dropdown">
+                        <label for="account_to">Tegenrekening</label>
+                        <check if="{{ @addressbook }}">
+                            <true>
+                                <button id="adresboek" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Adresboek</button>
+                                <div class="dropdown-menu" aria-labelledby="adresboek">
+                                    <repeat group="{{ @addressbook }}"  value="{{ @address }}">
+                                        <span class="dropdown-item" data-id="address" data-account="{{ @address->number }}" data-name="{{ @address->displayname }}">{{ @address->displayname }}</span>
+                                    </repeat>
+                                </div>
+                            </true>
+                        </check>
+                    </div>
+                    <input type="text" class="form-control" id="account_to" name="account_to" value="{{ @newtransaction.account_to }}" placeholder="NL99BAFO0123456789" required>
+                </div>
+                <div class="form-group">
+                    <label for="name_ignored">Naam rekeninghouder</label>
+                    <input type="text" class="form-control" id="name_ignored" name="name_ignored" value="{{ @account_to_displayname }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Omschrijving</label>
+                    <input type="text" class="form-control" id="description" name="description" value="{{ @newtransaction.description }}" placeholder="Min 6 karakters" required minlength="6"  maxlength="30" pattern=".{6,30}" title="6 tot 30 karakters">
+                </div>
+                <div class="form-group">
+                    <label for="description">Bedrag</label>
+                    <input type="text" class="form-control" id="amount" name="amount" value="{{ @newtransaction.amount }}" placeholder="0,00" required>
+                </div>
+                <input type="hidden" name="savetransaction" value="true">
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Verstuur transactie</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuleer</button>
+        </div>
+        </form>
+    </div>
 </div>
-
+</div>
 <script>
     $(document).ready( function () {
         $('#transactions').DataTable({
             "pagingType": "simple",
-            "pageLength": 20,
+            "pageLength": 10,
             "lengthChange": false,
             responsive: true,
             language: {
@@ -163,10 +178,37 @@
             var addressClicked = $( e.target );
             $("#account_to").val(addressClicked.attr("data-account"))
             $("#name_ignored").val(addressClicked.attr("data-name"))
-            //$('.adresboek').dropdown()
-            //e.preventDefault();
-           // e.stopPropagation();
         })
+
+        $('#description').blur(function () {
+            if (this.validity.tooShort) {
+                this.setCustomValidity("De omschrijving dient tenminste 6 karakters te bevatten");
+            } else {
+                this.setCustomValidity('');
+            }
+        })
+
+        // Extra validatie
+        $('#transaction').submit(function(){
+            var required = $('#transaction').find('[required]'); // change to [required] if not using true option as part of the attribute as it is not really needed.
+            var error = false;
+
+            for(var i = 0; i <= (required.length - 1);i++)
+            {
+                if(required[i].value == '' || (required[i].id == "description" && required[i].value.length < 6)) // tests that each required value does not equal blank, you could put in more stringent checks here if you wish.
+                {
+                    $(required[i]).addClass("is-invalid")
+                    error = true; // if any inputs fail validation then the error variable will be set to true;
+                } else {
+                    $(required[i]).removeClass("is-invalid")
+                }
+            }
+
+            if(error) // if error is true;
+            {
+                return false; // stop the form from being submitted.
+            }
+        });
 
 
         // Mooie hack, maar Carel wil liever platte tekstvelden
